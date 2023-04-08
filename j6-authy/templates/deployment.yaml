@@ -31,7 +31,7 @@ spec:
         - name: {{ .Chart.Name }}
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag}}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - name: http
@@ -45,6 +45,17 @@ spec:
             httpGet:
               path: /
               port: http
+          env:
+            - name: MYSQL_SERVER
+              value: {{ .Release.Name }}-mysql
+            - name: MYSQL_USER
+              value: {{ .Values.mysql.auth.username }}
+            - name: MYSQL_PASSWORD
+              value: {{ .Values.mysql.auth.password }}
+            - name: MYSQL_DATABASE
+              value: {{ .Values.mysql.auth.database }}
+            - name: ENVIRONMENT
+              value: {{ .Values.environment }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       {{- with .Values.nodeSelector }}
@@ -59,3 +70,4 @@ spec:
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+

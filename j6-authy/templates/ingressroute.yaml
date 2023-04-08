@@ -1,0 +1,22 @@
+{{- if .Values.traefik.enabled -}}
+{{- $fullName := include "j6-authy.fullname" . -}}
+{{- $svcPort := .Values.service.port -}}
+{{- $ingressClass := .Values.traefik.ingressClass -}}
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: {{ $fullName }}
+  namespace: {{ .Release.Namespace }}
+  annotations:
+    kubernetes.io/ingress.class: {{$ingressClass}}
+spec:
+    entryPoints:
+        - websecure
+    routes:
+        - match: Host(`{{ .Values.traefik.host }}`) && PathPrefix(`/`)
+          kind: Rule
+          services:
+            - name: {{ $fullName }}
+              port: {{ $svcPort }}
+              
+{{- end }}

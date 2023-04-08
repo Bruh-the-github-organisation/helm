@@ -5,14 +5,16 @@
 replicaCount: 1
 
 image:
-  repository: rhysj6/j6-authy
-  pullPolicy: always
+  repository: docker.hl.rhysj6.com/j6/authy
+  pullPolicy: Always
   # Overrides the image tag whose default is the chart appVersion.
-  tag: "dev"
+  tag: "latest"
+
+environment: "production"
 
 imagePullSecrets: []
-nameOverride: "j6-authy-dev"
-fullnameOverride: "j6-authy-dev"
+nameOverride: "j6-authy"
+fullnameOverride: "j6-authy"
 
 serviceAccount:
   # Specifies whether a service account should be created
@@ -41,13 +43,13 @@ service:
   port: 3000
 
 ingress:
-  enabled: true
-  className: "traefik-external"
+  enabled: false
+  className: ""
   annotations: {}
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
   hosts:
-    - host: authy.dev.rhysj6.com
+    - host: example.com
       paths:
         - path: /
           pathType: ImplementationSpecific
@@ -55,6 +57,12 @@ ingress:
   #  - secretName: chart-example-tls
   #    hosts:
   #      - chart-example.local
+
+traefik:
+  enabled: true
+  ingressClass: traefik-external
+  host: example.com
+
 
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
@@ -80,3 +88,20 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
+
+# MySQL
+mysql:
+  enabled: true
+  auth:
+    rootPassword: Yeet5000 # Set this to a secure password
+    database: authy
+    username: authy
+    password: Yeet5000 # Set this to a secure password
+  primary:
+    persistence:
+      enabled: true
+      size: 8Gi
+  secondary:
+    persistence:
+      enabled: true
+      size: 8Gi
