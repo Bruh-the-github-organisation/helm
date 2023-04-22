@@ -46,8 +46,6 @@ spec:
               path: /
               port: http
           env:
-            - name: REDIS_HOST
-              value: {{ .Release.Name }}-redis-headless
             - name: MYSQL_SERVER
               value: {{ .Release.Name }}-mysql
             - name: MYSQL_USER
